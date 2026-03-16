@@ -1,0 +1,2 @@
+[console_scripts]
+netscope = netscope.cli:main

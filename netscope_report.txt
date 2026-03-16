@@ -1,0 +1,4 @@
+--- RAPORT SKANOWANIA NETSCOPE ---
+Cel: scanme.nmap.org
+-----------------------------------
+
