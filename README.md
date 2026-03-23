@@ -19,19 +19,6 @@ It is built as a learning project to understand how real-world reconnaissance to
 🧩 Modular structure (easy to expand)
 
 🖼️ Preview
-[*] Starting NetScope...
-[+] Found 1 active host
-
-[+] Scanning target: 45.33.32.156
-[+] Scan completed
-
-==================================================
-SCAN REPORT FOR: 45.33.32.156
-==================================================
-
-Open ports:
- [OPEN] 22/tcp  (SSH)
- [OPEN] 80/tcp  (HTTP - Apache)
 
 Device analysis:
  → Linux / SSH device
