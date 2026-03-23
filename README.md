@@ -80,11 +80,11 @@ Saves results to file
 
 🧱 Project Structure (example)
 netscope/
-│── netscope.py
-│── scanner.py
-│── utils.py
-│── README.md
-🔐 Disclaimer
+├── cli.py # CLI entry point
+├── scanner.py # Port scanning logic
+├── fingerprint.py # Device fingerprinting
+├── rules.py # Port → device mapping
+├── init.py
 
 This tool is intended for educational purposes only.
 
@@ -114,7 +114,9 @@ Improved fingerprinting
 
 Logging system
 
-👨‍💻 Author
+## 👨‍💻 Author
+
+Rafał Kamrowski
 
 Created as part of a cybersecurity learning journey.
 
