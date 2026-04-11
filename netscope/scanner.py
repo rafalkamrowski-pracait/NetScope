@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 import re
 import subprocess
 import shlex
-from .fingerprint import detect_device
-from .rules import PORT_RULES
+from fingerprint import detect_device
+from rules import PORT_RULES
 
 
 G = '\033[92m'
@@ -31,7 +32,7 @@ def discover_hosts(target):
 def scan_target(target):
     target = validate_target(target)
     print(f"\n{B}[*] Rozpoczynam profesjonalny skan portów: {W}{target}")
-    command = ["nmap", "-sS", "-sV", "-T4", target]
+    command = ["nmap", "-sS", "-sV", "--top-ports", "50", "-T4", target]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=False) 
         output = result.stdout
@@ -62,3 +63,11 @@ def scan_target(target):
     except Exception as e:
         print(f"{R}[-][!] Błąd podczas skanowania: {e}{W}")
         return ""
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="NetScope Scanner")
+    parser.add_argument('target', help='Adres IP lub domena do skanowania')
+    args = parser.parse_args()
+    scan_target(args.target)
+

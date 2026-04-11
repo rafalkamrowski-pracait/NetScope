@@ -1,0 +1,10 @@
+--- RAPORT SKANOWANIA NETSCOPE ---
+Cel: 192.168.0.1
+-----------------------------------
+
+URZĄDZENIE: 192.168.0.1
+  -> 53/tcp   open  domain         ISC BIND 9.11.5-P4-5.1 (Debian Linux)
+  -> 80/tcp   open  http           BusyBox http 1.19.4
+  -> 443/tcp  open  ssl/tcpwrapped
+  -> 1900/tcp open  upnp           MiniUPnP 2.2.2 (TP-LINK router; UPnP 1.1)
+-------------------------

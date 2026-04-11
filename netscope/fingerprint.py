@@ -7,15 +7,23 @@ def detect_device(target):
     print(f"Fingerprinting device {target}...")
 
     command = [
-        "nmap",
+        "sudo", "nmap",
         "-O",
         "--osscan-limit",
+        "--max-os-tries", "1",
+        "-T4",
         target
     ]
 
-    result = subprocess.run(command, capture_output=True, text=True)
-
-    output = result.stdout
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, timeout=30)
+        output = result.stdout
+    except subprocess.TimeoutExpired:
+        output = ""
+        print(f"\n[!] Ostrzeżenie: Detekcja OS dla {target} przekroczyła czas.")
+    except Exception as e:
+        output = ""
+        print(f"\n[!] Wystąpił błąd: {e}")
 
     device = "Unknown device"
 

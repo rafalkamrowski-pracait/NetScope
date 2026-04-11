@@ -1,6 +1,6 @@
+__pycache__/
+*.pyc
+*.tar.gz
 build/
 dist/
 *.egg-info/
-__pycache__/
-netscope_report.txt
-*.pyc
