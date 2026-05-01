@@ -1,5 +1,6 @@
 import sys
 import subprocess
+from netscope.vulnerability_manager import CVEAnalyzer
 from colorama import Fore, Style, init
 from netscope.scanner import discover_hosts, scan_target
 
@@ -26,6 +27,7 @@ def main():
 
     print(f"{Fore.CYAN}{Style.BRIGHT}=== NetScope v1.0.0 ===")
     print(f"{Fore.BLUE}[*] Inicjalizacja skanera...")
+    analyzer = CVEAnalyzer()
 
     target = input(f"{Fore.WHITE}Podaj cel (IP lub zakres, np. 192.168.1.1): {Style.RESET_ALL}")
     
@@ -66,6 +68,10 @@ def main():
                     print(f"{color} [ALERT] Port {port}: {desc}{Style.RESET_ALL}")
                     if version.strip():
                         print(f"{Fore.WHITE}       └── Wykryto: {version}{Style.RESET_ALL}")
+                        print(f"{Fore.CYAN}      [i] Szukam podatności dla: {version}...")
+                        cve_results = analyzer.get_cves_by_product(version)
+                        print(analyzer.format_report(cve_results))
+
                 else:
                     print(f"{Fore.GREEN} [+] Port {port}: {version if version.strip() else 'Usługa standardowa'}{Style.RESET_ALL}")
 
