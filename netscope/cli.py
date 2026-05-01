@@ -1,10 +1,8 @@
 import sys
 import subprocess
 from colorama import Fore, Style, init
-# Importujemy Twoje moduły
 from netscope.scanner import discover_hosts, scan_target
 
-# Inicjalizacja kolorów (autoreset sprawia, że kolor wraca do normy po każdym print)
 init(autoreset=True)
 
 def check_nmap():
@@ -16,8 +14,14 @@ def check_nmap():
         print(f"{Fore.YELLOW}[*] Sugestia: sudo apt update && sudo apt install nmap")
         sys.exit(1)
 
+def check_privileges():
+    """Sprawdza, czy program ma uprawnienia roota (wymagane dla pełnego skanowania Nmap)."""
+    if os.geteuid() != 0:
+        print(f"{Fore.YELLOW}[!] Uwaga: Niektóre funkcje Nmapa (np. skanowanie SYN) wymagają uprawnień sudo.")
+        print(f"{Fore.YELLOW}[*] Sugestia: Uruchom program jako: sudo python3 cli.py\n")
+
+
 def main():
-    # 1. Sprawdzenie zależności systemowych
     check_nmap()
 
     print(f"{Fore.CYAN}{Style.BRIGHT}=== NetScope v1.0.0 ===")
@@ -30,7 +34,6 @@ def main():
         return
 
     try:
-        # 2. Wykrywanie hostów
         print(f"{Fore.YELLOW}[*] Szukanie aktywnych hostów w {target}...")
         hosts = discover_hosts(target)
 
@@ -40,11 +43,31 @@ def main():
 
         print(f"{Fore.GREEN}[+] Znaleziono hosty: {', '.join(hosts)}")
 
-        # 3. Skanowanie każdego hosta
         for host in hosts:
             print(f"\n{Fore.MAGENTA}--- Skanowanie: {host} ---")
             report = scan_target(host)
-            print(f"{Fore.WHITE}{report}")
+            print(f"\n{Fore.YELLOW}[!] ANALIZA ZAGROŻEŃ NETSCOPE DLA {host}:{Style.RESET_ALL}")
+            
+            import re
+            from rules import PORT_RULES # Upewnij się, że ścieżka do rules jest poprawna
+            
+            findings = re.findall(r"(\d+)/tcp\s+open\s+\S+\s*(.*)", report)
+            
+            if not findings:
+                # Jeśli nmap nie zwrócił wersji, szukamy samych portów
+                simple_ports = re.findall(r"(\d+)/tcp\s+open", report)
+                findings = [(p, "Brak szczegółów wersji") for p in simple_ports]
+
+            for port, version in findings:
+                key = f"{port}/tcp"
+                if key in PORT_RULES:
+                    desc = PORT_RULES[key]
+                    color = Fore.RED if any(word in desc for word in ["[KRYTYCZNE]", "[WYSOKIE]"]) else Fore.YELLOW
+                    print(f"{color} [ALERT] Port {port}: {desc}{Style.RESET_ALL}")
+                    if version.strip():
+                        print(f"{Fore.WHITE}       └── Wykryto: {version}{Style.RESET_ALL}")
+                else:
+                    print(f"{Fore.GREEN} [+] Port {port}: {version if version.strip() else 'Usługa standardowa'}{Style.RESET_ALL}")
 
         print(f"\n{Fore.GREEN}[+] Skanowanie zakończone pomyślnie.")
 
